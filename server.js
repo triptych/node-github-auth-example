@@ -5,7 +5,7 @@ import cookieSession from "cookie-session";
 const app = express();
 app.use(
   cookieSession({
-    secret: process.env.COOKIE_SECRET
+    secret: process.env.COOKIE_SECRET,
   })
 );
 
@@ -14,7 +14,7 @@ const client_secret = process.env.GITHUB_CLIENT_SECRET;
 console.log({ client_id, client_secret });
 
 app.get("/", (req, res) => {
-  res.send("Hello GitHub auth");
+  res.send("Hello GitHub auth <a href='/login/github'>login</a>");
 });
 
 app.get("/login/github", (req, res) => {
@@ -28,13 +28,13 @@ async function getAccessToken({ code, client_id, client_secret }) {
   const request = await fetch("https://github.com/login/oauth/access_token", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       client_id,
       client_secret,
-      code
-    })
+      code,
+    }),
   });
   const text = await request.text();
   const params = new URLSearchParams(text);
@@ -44,8 +44,8 @@ async function getAccessToken({ code, client_id, client_secret }) {
 async function fetchGitHubUser(token) {
   const request = await fetch("https://api.github.com/user", {
     headers: {
-      Authorization: "token " + token
-    }
+      Authorization: "token " + token,
+    },
   });
   return await request.json();
 }
@@ -64,11 +64,13 @@ app.get("/login/github/callback", async (req, res) => {
 });
 
 app.get("/admin", async (req, res) => {
-  if (req.session && req.session.githubId === 1126497) {
-    res.send("Hello Kevin <pre>" + JSON.stringify(req.session, null, 2));
+  console.log(req.session.githubId);
+  if (req.session && req.session.githubId === 8691) {
+    res.send("Hello Andrew <pre>" + JSON.stringify(req.session, null, 2));
     // Possible use "fetchGitHubUser" with the access_token
   } else {
-    res.redirect("/login/github");
+    // res.redirect("/login/github");
+    res.send("wrong users <a href='/logout'>Logout</a>");
   }
 });
 
