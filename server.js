@@ -65,9 +65,13 @@ async function setGist(token) {
       "description": "a test gist!",
       "files": {
         "readme.txt": {
-          "content": "Some stuff! please work! " + nDate.toDateString();
+          "content": "Some stuff! please work! " + nDate.toDateString()
+        },
+        "somedata.json":{
+          "content": "{fooo}"
         }
-      }
+      },
+      "public": true
     })
   });
 
